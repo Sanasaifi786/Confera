@@ -5,7 +5,14 @@ let messages = {};
 let timeOnline = {};
 
 export const connectToSocket = (server)=>{
-    const io = new Server(server);
+    const io = new Server(server,{
+        cors:{
+            origin:"*",
+            methods:["GET","POST"],
+            allowedHeaders:["*"],
+            credentials:true
+        }
+    });
 
     io.on("connection",(socket)=>{
 
@@ -35,7 +42,7 @@ export const connectToSocket = (server)=>{
             .reduce(([room,isFound],[roomKey,roomValue])=>{
                 if(!isFound && roomValue.includes(socket.id)){
                     return [roomKey,true];
-            }}
+            }})
             return [room,isFound];
             },['',false]);
 
@@ -47,6 +54,27 @@ export const connectToSocket = (server)=>{
                 connections[matchingRoom].forEach(elem=>{
                     io.to(elem).emit("receive-message",data,sender,socket.id);
                 })
+            }
+        })
+        socket.on("disconnect",()=>{
+            var diffTime = Math.abs(timeOnline[socket.id] - new Date());
+            var key;
+            for(const [k,v] of JSON.parse(JSON.stringify(Object.entries(connections)))){
+                for(let a = 0 ; a<v.length; a++)
+                {
+                    if(v[a]===socket.id){
+                        key = k;
+                        for(let b = 0; b<connections[key].length; b++){
+                            io.to(connections[key][b]).emit("user-left",socket.id);
+                        }
+                        var index = connections[key].indexOf(socket.id);
+                        connections[key].splice(index,1);
+
+                        if(connectios[key].length==0){
+                            delete connections[key];
+                        }
+                    }
+                }
             }
         })
     return io;
