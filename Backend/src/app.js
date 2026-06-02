@@ -32,6 +32,3 @@ connectDB()
         console.error("❌ Server failed to start:", error.message);
         process.exit(1);
     });
-
-
-start();
