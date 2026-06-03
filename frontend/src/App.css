@@ -11,3 +11,20 @@
   background-size: cover;
   color: white;
 }
+.landingPageContainer nav{
+  padding-inline: 1.2 rem;
+  padding-block: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.landingPageContainer nav h2{
+  font-size: 1.8rem;
+  font-weight: 500;
+}
+.landingPageContainer nav navlist{
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
