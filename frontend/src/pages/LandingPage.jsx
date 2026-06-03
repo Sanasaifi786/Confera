@@ -1,6 +1,6 @@
 import React from 'react'
-import './App.css'
-function landing() {
+import '../App.css'
+function LandingPage() {
   return (
     <div className='landingPageContainer'>
       <nav>
@@ -19,4 +19,4 @@ function landing() {
   )
 }
 
-export default landing
+export default LandingPage;
