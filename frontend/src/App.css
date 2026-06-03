@@ -3,3 +3,11 @@
   padding:0;
   box-sizing: border-box;
 }
+.landingPageContainer{
+  width: 100vw;
+  height: 100vh;
+  background: url();
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+}
