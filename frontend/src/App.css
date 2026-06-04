@@ -3,13 +3,14 @@
   padding:0;
   box-sizing: border-box;
 }
-.landingPageContainer{
+.landingPageContainer {
   width: 100vw;
   height: 100vh;
-  background: url(/public/backgroundLogo.png);
+  background-image: url("/image.png");
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  color: white;
+  overflow: hidden;
 }
 .landingPageContainer nav{
   padding-inline: 1.2 rem;
