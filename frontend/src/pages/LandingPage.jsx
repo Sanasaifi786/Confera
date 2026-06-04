@@ -15,6 +15,20 @@ function LandingPage() {
             </div>
         </div>
       </nav>
+      <div className="landingMainContainer">
+          <div>
+            <h1>
+              Connect with your loved oned
+            </h1>
+            <p>Cover a distance by Confera</p>
+            <div>
+              <Link to={"/"}>Get Started</Link>
+            </div>
+          </div>
+          <div>
+            <img src="/public/mobile.png" alt="" />
+          </div>
+      </div>
     </div>
   )
 }
