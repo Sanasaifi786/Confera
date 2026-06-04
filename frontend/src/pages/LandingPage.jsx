@@ -10,7 +10,7 @@ function LandingPage() {
         <div className="navList">
             <p>Join as Guest</p>
             <p>Register</p>
-            <div role = 'button'>
+            <div className="loginBtn" role='button'>
                 <p>Login</p>
             </div>
         </div>
