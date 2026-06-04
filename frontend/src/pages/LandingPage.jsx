@@ -16,13 +16,13 @@ function LandingPage() {
         </div>
       </nav>
       <div className="landingMainContainer">
-          <div>
+          <div >
             <h1>
               Connect with your loved oned
             </h1>
             <p>Cover a distance by Confera</p>
-            <div>
-              <Link to={"/"}>Get Started</Link>
+            <div role='button'>
+              <Link>Get Started</Link>
             </div>
           </div>
           <div>
