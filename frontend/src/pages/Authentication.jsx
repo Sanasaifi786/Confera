@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import './Authentication.css';
 
 function Authentication() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { login, register } = useAuth();
   
   const mode = searchParams.get('mode') || 'login';
   
@@ -31,39 +33,17 @@ function Authentication() {
     e.preventDefault();
     setError('');
     setMessage('');
-    setLoading(false);
-
-    const url = mode === 'register' 
-      ? 'http://localhost:8000/api/v1/user/register'
-      : 'http://localhost:8000/api/v1/user/login';
-
-    const payload = mode === 'register'
-      ? { name, username, password }
-      : { username, password };
-
     setLoading(true);
+
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
-      }
-
       if (mode === 'register') {
+        await register(name, username, password);
         setMessage('Registration successful! You can now log in.');
         setTimeout(() => {
           setSearchParams({ mode: 'login' });
         }, 1500);
       } else {
-        localStorage.setItem('token', data.token);
+        await login(username, password);
         setMessage('Login successful! Redirecting...');
         setTimeout(() => {
           navigate('/');
