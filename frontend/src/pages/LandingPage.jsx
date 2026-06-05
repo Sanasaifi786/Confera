@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import '../App.css'
 
 function LandingPage() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   return (
     <div className='landingPageContainer'>
@@ -12,11 +14,22 @@ function LandingPage() {
             <h2>Confera</h2>
         </div>
         <div className="navList">
-            <p onClick={() => navigate('/auth?mode=guest')}>Join as Guest</p>
-            <p onClick={() => navigate('/auth?mode=register')}>Register</p>
-            <div className="loginBtn" role='button' onClick={() => navigate('/auth?mode=login')}>
-                <p>Login</p>
-            </div>
+            {user ? (
+              <>
+                <p style={{ cursor: 'default', color: '#a5b4fc', fontWeight: '600' }}>Hello, {user.name}</p>
+                <div className="loginBtn" role='button' onClick={logout}>
+                    <p>Logout</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <p onClick={() => navigate('/auth?mode=guest')}>Join as Guest</p>
+                <p onClick={() => navigate('/auth?mode=register')}>Register</p>
+                <div className="loginBtn" role='button' onClick={() => navigate('/auth?mode=login')}>
+                    <p>Login</p>
+                </div>
+              </>
+            )}
         </div>
       </nav>
       <div className="landingMainContainer">
@@ -26,7 +39,11 @@ function LandingPage() {
             </h1>
             <p>Cover a distance by Confera</p>
             <div role='button'>
-              <Link to={"/auth?mode=register"}>Get Started</Link>
+              {user ? (
+                <Link to={"/"}>Welcome Back</Link>
+              ) : (
+                <Link to={"/auth?mode=register"}>Get Started</Link>
+              )}
             </div>
           </div>
           <div>
