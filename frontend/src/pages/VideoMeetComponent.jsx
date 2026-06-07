@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 const server_url  = "http://localhost:8000";
 
@@ -11,6 +11,10 @@ const peerCongifConnections = {
 }
 
 function VideoMeetComponent() {
+
+    var socketRef = useRef();
+    let socketIdRef = useRef();
+
   return (
     <div>
       Video Meet
