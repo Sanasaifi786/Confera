@@ -5,13 +5,15 @@ const server_url  = "http://localhost:8000";
 var connections = {};
 
 const peerCongifConnections = {
-
+    "iceServers":[
+        {"urls": "stun.l.google.com:19302"}
+    ]
 }
 
 function VideoMeetComponent() {
   return (
     <div>
-      
+      Video Meet
     </div>
   )
 }
