@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-
+import "../styles/VideoMeetComponent.css";
 const server_url  = "http://localhost:8000";
 
 var connections = {};
@@ -31,11 +31,14 @@ function VideoMeetComponent() {
     const videoRef = useRef();
      let [videos, setVideos] = useState([]);
 
-     
-
   return (
     <div>
-      Video Meet
+      {askForUsername==true ?
+      <div>
+        <h2>Enter into Lobby</h2>
+        <TextField label="Username" variant="outlined" value={username} onChange={e=> setUsername(e.target.value)}/>
+      </div>:<></>
+      }
     </div>
   )
 }
