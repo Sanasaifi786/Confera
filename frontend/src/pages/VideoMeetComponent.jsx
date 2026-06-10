@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
-import "../styles/VideoMeetComponent.css";
-const server_url  = "http://localhost:8000";
+// import "../styles/VideoMeetComponent.css"
+const server_url  = "http://localhost:3000";
 
 var connections = {};
 
@@ -27,16 +27,46 @@ function VideoMeetComponent() {
     let [message, setMessage] = useState("");
     let [newMessage, setNewMessage] = useState(0);
     let [askForUsername, setAskForUsername] = useState(true);
+    let [username, setUsername] = useState("");
 
     const videoRef = useRef();
      let [videos, setVideos] = useState([]);
 
+      const getPermissions = async()=>{
+        try{
+          const videoPermission = await navigator.mediaDevices.getUserMedia({video:true});
+          if(videoPermission){
+            setVideoAvailable(true);
+          }
+          else{
+            setVideoAvailable(false);
+          }
+           const audioPermission = await navigator.mediaDevices.getUserMedia({audio:true});
+          if(audioPermission){
+            setAudioAvailable(true);
+          }
+          else{
+            setAudioAvailable(false);
+          }
+        }
+        catch(err){
+
+        }
+      }
+
+     useEffect(()=>{
+      getPermissions();
+     },[])
   return (
     <div>
       {askForUsername==true ?
       <div>
         <h2>Enter into Lobby</h2>
         <TextField label="Username" variant="outlined" value={username} onChange={e=> setUsername(e.target.value)}/>
+        <Button variant="contained">Join</Button>
+        <div>
+          <video ref={videoRef} autoPlay muted></video>
+        </div>
       </div>:<></>
       }
     </div>
