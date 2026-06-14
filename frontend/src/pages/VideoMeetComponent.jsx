@@ -115,7 +115,7 @@ function VideoMeetComponent() {
       <div>
         <h2>Enter into Lobby</h2>
         <TextField label="Username" variant="outlined" value={username} onChange={e=> setUsername(e.target.value)}/>
-        <Button variant="contained">Join</Button>
+        <Button variant="contained" onClick={connect}>Join</Button>
         <div>
           <video ref={videoRef} autoPlay muted></video>
         </div>
