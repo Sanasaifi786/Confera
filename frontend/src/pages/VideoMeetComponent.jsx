@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { TextField, Button } from '@mui/material'
-import "../styles/VideoMeetComponent.css"
+// import "../styles/VideoMeetComponent.css"
 const server_url  = "http://localhost:8000";
 
 var connections = {};
@@ -49,15 +49,66 @@ function VideoMeetComponent() {
           else{
             setAudioAvailable(false);
           }
+          if(navigator.mediaDevices.getDisplayMedia)
+          {
+            setScreenAvailable(true);
+          }
+          else{
+            setScreenAvailable(false);
+          }
+          if(videoAvailable || audioAvailable)
+          {
+            const userMediaStream = await navigator.mediaDevices.getUserMedia({video:videoAvailable,audio:audioAvailable});
+
+            if(userMediaStream)
+            {
+              window.localStream = userMediaStream;
+              if(localVideoRef.current)
+              {
+                localVideoRef.current.srcObject = userMediaStream;
+              }
+            }
+          }
         }
         catch(err){
-
+          console.log(err);  
         }
       }
 
      useEffect(()=>{
-      getPermissions();
+      getPermissions(); 
      },[])
+     let getUserMedia = ()=>{
+      if((video && videoAvailable) || (audio && audioAvailable))
+      {
+        navigator.mediaDevices.getUserMedia({video: video, audio : audio})
+        .then(()=>{})
+        .then((stream)=>{})
+        .catch((e)=> console.log(e));
+      }
+      else{
+        try{
+          let tracks = localVideoRef.current.srcObject.getTracks();
+          tracks.forEach(track => track.stop());
+        }
+        catch(e){
+          console.log(e);
+          
+        }
+      }
+     }
+    useEffect(()=>{
+      if(video !== undefined && audio !== undefined)
+      {
+        getUserMedia();
+      }
+    },[audio,video])
+
+    let getMedia = ()=>{
+      setVideo(videoAvailable);
+      setAudio(audioAvailable);
+      connectToSocketServer();
+    }
   return (
     <div>
       {askForUsername==true ?
