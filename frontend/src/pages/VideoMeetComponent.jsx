@@ -107,7 +107,7 @@ function VideoMeetComponent() {
     let getMedia = ()=>{
       setVideo(videoAvailable);
       setAudio(audioAvailable);
-      connectToSocketServer();
+      // connectToSocketServer();
     }
   return (
     <div>
