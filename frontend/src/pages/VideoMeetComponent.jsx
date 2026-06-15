@@ -19,7 +19,7 @@ function VideoMeetComponent() {
     let localVideoRef = useRef();
     let [videoAvailable, setVideoAvailable] = useState(true);
     let [audioAvailable, setAudioAvailable] = useState(true);
-    let [video, setVideo] = useState();
+    let [video, setVideo] = useState([]);
     let [audio, setAudio] = useState();
     let [screen, setScreen] = useState();
     let [showModal, setShowModal] = useState();
@@ -104,10 +104,21 @@ function VideoMeetComponent() {
       }
     },[audio,video])
 
+    let connectToSocketServer = ()=>{
+      socketRef.current = io.connect(server_url,{secure:true});
+      socketRef.current.on('signal',gotMessageFromServer);
+      socketRef.current.on('user-joined',()=>{
+        socketRef.current.emit('join-call', window.location.href);
+        socketRef.current = scoketRef.current.id;
+        socketRef.current.on('Chat-message',addMessage);
+        
+      });
+    }
+
     let getMedia = ()=>{
       setVideo(videoAvailable);
       setAudio(audioAvailable);
-      // connectToSocketServer();
+      connectToSocketServer();
     }
   return (
     <div>
