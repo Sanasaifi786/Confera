@@ -1,0 +1,86 @@
+.video-meet-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Lobby Styles */
+.lobby-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.lobby-input {
+    margin-bottom: 1rem !important;
+}
+
+.local-video-wrapper {
+    margin-top: 2rem;
+}
+
+.local-video {
+    width: 400px;
+    border-radius: 10px;
+}
+
+.local-video.active {
+    width: 300px;
+    border: 2px solid blue;
+}
+
+/* Meeting Room Styles */
+.meet-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.video-grid-container {
+    flex: 0.7;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.video-item {
+    margin: 10px;
+}
+
+.remote-video {
+    width: 300px;
+    border-radius: 10px;
+}
+
+/* Chat Sidebar Styles */
+.chat-sidebar {
+    flex: 0.3;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #ccc;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.chat-send-btn {
+    margin-left: 10px !important;
+}
