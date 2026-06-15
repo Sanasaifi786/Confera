@@ -283,24 +283,36 @@ function VideoMeetComponent() {
         <div className="video-meet-container">
             {askForUsername === true ?
                 <div className="lobby-container">
-                    <h2>Enter into Lobby</h2>
-                    <TextField label="Username" variant="outlined" value={username} onChange={e => setUsername(e.target.value)} className="lobby-input" />
-                    <Button variant="contained" onClick={connect}>Join</Button>
-                    <div className="local-video-wrapper">
-                        <video ref={localVideoRef} autoPlay muted className="local-video"></video>
+                    <div className="lobby-card">
+                        <h2>Enter into Lobby</h2>
+                        <TextField label="Username" variant="outlined" value={username} onChange={e => setUsername(e.target.value)} className="lobby-input" />
+                        <Button variant="contained" onClick={connect} className="join-btn">Join</Button>
+                        <div className="local-video-wrapper">
+                            {!videoAvailable && (
+                                <div className="video-avatar-fallback">
+                                    {username ? username.charAt(0).toUpperCase() : 'U'}
+                                </div>
+                            )}
+                            <video ref={localVideoRef} autoPlay muted className="local-video"></video>
+                        </div>
                     </div>
                 </div> :
                 <div className="meet-container">
                     <div className="video-grid-container">
                         <div className="video-item">
+                            {(!videoAvailable || video === false) && (
+                                <div className="video-avatar-fallback">
+                                    {username ? username.charAt(0).toUpperCase() : 'U'}
+                                </div>
+                            )}
                             <video ref={localVideoRef} autoPlay muted className="local-video active"></video>
                         </div>
-                        {videos.map((video, index) => (
+                        {videos.map((videoItem, index) => (
                             <div key={index} className="video-item">
                                 <video
                                     ref={ref => {
-                                        if (ref && video.stream) {
-                                            ref.srcObject = video.stream;
+                                        if (ref && videoItem.stream) {
+                                            ref.srcObject = videoItem.stream;
                                         }
                                     }}
                                     autoPlay
@@ -309,6 +321,13 @@ function VideoMeetComponent() {
                             </div>
                         ))}
                     </div>
+                    
+                    <div className="control-bar">
+                        <Button variant="contained" className="leave-btn" onClick={() => window.location.href="/"}>
+                            Leave Meeting
+                        </Button>
+                    </div>
+
                     <div className="chat-sidebar">
                         <div className="chat-messages">
                             {messages.map((msg, index) => (
