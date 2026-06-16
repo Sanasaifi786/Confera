@@ -39,8 +39,8 @@ function Authentication() {
       if (mode === 'register') {
         await register(name, username, password);
         setMessage('Registration successful! You can now log in.');
-        setTimeout(() => {
-          setSearchParams({ mode: 'login' });
+        ssetTimeout(() => {
+          navigate('/');
         }, 1500);
       } else {
         await login(username, password);
