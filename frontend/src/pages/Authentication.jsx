@@ -38,15 +38,15 @@ function Authentication() {
     try {
       if (mode === 'register') {
         await register(name, username, password);
-        setMessage('Registration successful! You can now log in.');
-        ssetTimeout(() => {
-          navigate('/');
+        setMessage('Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          setSearchParams({ mode: 'login' });
         }, 1500);
       } else {
         await login(username, password);
         setMessage('Login successful! Redirecting...');
         setTimeout(() => {
-          navigate('/');
+          navigate('/home');
         }, 1500);
       }
     } catch (err) {
@@ -88,12 +88,12 @@ function Authentication() {
       <div className="authRightPane">
         <div className="authFormWrapper">
           <h2 className="authFormTitle">
-            {mode === 'register' ? 'Register' : 'Login'}
+            {mode === 'register' ? 'Create Account' : 'Welcome Back'}
           </h2>
           <p className="authFormSubtitle">
             {mode === 'register' 
               ? 'Create an account to start video conferencing today!' 
-              : 'Measure the performance of cryptos,get big profits!'}
+              : 'Sign in to your account and start a meeting.'}
           </p>
 
           <button className="googleBtn" onClick={handleGoogleSignIn}>
