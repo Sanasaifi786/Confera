@@ -183,35 +183,32 @@ function VideoMeetComponent() {
                         }
                     };
 
-                    connections[socketListId].onaddstream = (event) => {
-                        console.log("GOT DISPLAY MEDIA");
-                        let videoExists = videoRef.current !== undefined;
-                        if (videoExists) {
-                            // Update videos array
-                            setVideos(videos => {
-                                let updatedVideos = [...videos];
-                                let found = false;
-                                for (let i = 0; i < updatedVideos.length; i++) {
-                                    if (updatedVideos[i].socketId === socketListId) {
-                                        updatedVideos[i].stream = event.stream;
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found) {
-                                    updatedVideos.push({ socketId: socketListId, stream: event.stream, autoPlay: true, playsinline: true });
-                                }
-                                return updatedVideos;
-                            });
-                        }
+                    connections[socketListId].ontrack = (event) => {
+                        console.log("GOT REMOTE TRACK", event.streams);
+                        const remoteStream = event.streams[0];
+                        if (!remoteStream) return;
+
+                        setVideos(prevVideos => {
+                            const exists = prevVideos.find(v => v.socketId === socketListId);
+                            if (exists) {
+                                return prevVideos.map(v =>
+                                    v.socketId === socketListId ? { ...v, stream: remoteStream } : v
+                                );
+                            }
+                            return [...prevVideos, { socketId: socketListId, stream: remoteStream }];
+                        });
                     };
 
                     if (window.localStream !== undefined && window.localStream !== null) {
-                        connections[socketListId].addStream(window.localStream);
+                        window.localStream.getTracks().forEach(track => {
+                            connections[socketListId].addTrack(track, window.localStream);
+                        });
                     } else {
                         let blackSilence = (...args) => new MediaStream([black(...args), silence()]);
                         window.localStream = blackSilence();
-                        connections[socketListId].addStream(window.localStream);
+                        window.localStream.getTracks().forEach(track => {
+                            connections[socketListId].addTrack(track, window.localStream);
+                        });
                     }
                 }
             });
@@ -220,7 +217,9 @@ function VideoMeetComponent() {
                 for (let id2 in connections) {
                     if (id2 === socketIdRef.current) continue;
                     try {
-                        connections[id2].addStream(window.localStream);
+                        window.localStream.getTracks().forEach(track => {
+                            connections[id2].addTrack(track, window.localStream);
+                        });
                     } catch (e) { }
 
                     connections[id2].createOffer().then((description) => {
