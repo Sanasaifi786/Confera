@@ -10,14 +10,32 @@ function Home() {
   const [joinCode, setJoinCode] = useState('');
   const [joinError, setJoinError] = useState('');
 
+  // State for the "Your meeting is ready" panel
+  const [createdMeetingId, setCreatedMeetingId] = useState(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+
   const generateMeetingId = () => {
     const seg = () => Math.random().toString(36).substring(2, 6);
     return `${seg()}-${seg()}-${seg()}`;
   };
 
+  // Step 1: Generate ID & show the share panel (don't navigate yet)
   const handleNewMeeting = () => {
     const id = generateMeetingId();
-    navigate(`/${id}`);
+    setCreatedMeetingId(id);
+    setLinkCopied(false);
+  };
+
+  // Step 2: Copy the link to clipboard
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/${createdMeetingId}`;
+    navigator.clipboard.writeText(link);
+    setLinkCopied(true);
+  };
+
+  // Step 3: Actually start the meeting
+  const handleStartMeeting = () => {
+    navigate(`/${createdMeetingId}`);
   };
 
   const handleJoinMeeting = () => {
@@ -77,12 +95,41 @@ function Home() {
             {joinError && <p className="join-error">{joinError}</p>}
           </div>
 
+          {/* ---- Meeting Ready Panel ---- */}
+          {createdMeetingId && (
+            <div className="meeting-ready-panel">
+              <p className="meeting-ready-title">✅ Your meeting is ready</p>
+              <p className="meeting-ready-subtitle">
+                Share this link with your friends so they can join:
+              </p>
+
+              {/* Link display box */}
+              <div className="meeting-link-box">
+                <span className="meeting-link-text">
+                  {window.location.origin}/{createdMeetingId}
+                </span>
+                <button className="btn-copy-link" onClick={handleCopyLink}>
+                  {linkCopied ? '✓ Copied' : 'Copy'}
+                </button>
+              </div>
+
+              <p className="meeting-ready-note">
+                Share the link, then click Start Meeting when ready.
+              </p>
+
+              <button className="btn-start-meeting" onClick={handleStartMeeting}>
+                Start Meeting →
+              </button>
+            </div>
+          )}
+
           <hr className="home-divider" />
           <p className="home-hint">
+            Click{' '}
             <a href="#" onClick={(e) => { e.preventDefault(); handleNewMeeting(); }}>
-              Start a new meeting
+              New Meeting
             </a>{' '}
-            or join with a meeting code above.
+            to get a shareable link, or join with a code above.
           </p>
         </div>
 
