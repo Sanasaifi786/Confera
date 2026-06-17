@@ -66,7 +66,7 @@
   font-size: 2.2rem;
   font-weight: 700;
   margin: 0;
-  background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -196,7 +196,7 @@
 }
 
 .inputGroup input:focus {
-  border-color: #818cf8;
+  border-color: #a78bfa;
   background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
 }
@@ -246,8 +246,8 @@
 }
 
 .checkboxContainer input:checked ~ .checkmark {
-  background-color: #818cf8;
-  border-color: #818cf8;
+  background-color: #a78bfa;
+  border-color: #a78bfa;
 }
 
 .checkmark:after {
@@ -277,26 +277,28 @@
 }
 
 .forgotLink:hover {
-  color: #818cf8;
+  color: #a78bfa;
 }
 
 /* Submit Button */
 .submitBtn {
   margin-top: 1rem;
-  background: #ffffff;
-  color: #0a0f1d;
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  color: white;
   border: none;
   border-radius: 10px;
   padding: 0.9rem;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.35);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .submitBtn:hover {
-  background: #e2e8f0;
+  opacity: 0.9;
   transform: translateY(-1px);
+  box-shadow: 0 12px 36px rgba(124, 58, 237, 0.5);
 }
 
 .submitBtn:active {
@@ -340,14 +342,14 @@
 }
 
 .authFooter span {
-  color: #818cf8;
+  color: #a78bfa;
   font-weight: 600;
   cursor: pointer;
   transition: color 0.3s ease;
 }
 
 .authFooter span:hover {
-  color: #a5b4fc;
+  color: #c4b5fd;
   text-decoration: underline;
 }
 
