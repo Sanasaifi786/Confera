@@ -1,29 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import './Home.css';
 
+const API = 'http://localhost:8000/api/v1/user';
+
 function Home() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
 
   const [joinCode, setJoinCode] = useState('');
   const [joinError, setJoinError] = useState('');
+  const [meetings, setMeetings] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
 
-  // State for the "Your meeting is ready" panel
   const [createdMeetingId, setCreatedMeetingId] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
+
+  // Fetch meeting history on page load
+  useEffect(() => {
+    if (!token) return;
+    fetch(`${API}/get_all_activities?token=${token}`)
+      .then(res => res.json())
+      .then(data => {
+        setMeetings(data.meetings || []);
+        setLoadingHistory(false);
+      })
+      .catch(() => setLoadingHistory(false));
+  }, [token]);
 
   const generateMeetingId = () => {
     const seg = () => Math.random().toString(36).substring(2, 6);
     return `${seg()}-${seg()}-${seg()}`;
   };
 
-  // Step 1: Generate ID & show the share panel (don't navigate yet)
+  // Step 1: Generate ID & save to history, then show the share panel
   const handleNewMeeting = () => {
     const id = generateMeetingId();
     setCreatedMeetingId(id);
     setLinkCopied(false);
+    // Save to backend activity history
+    if (token) {
+      fetch(`${API}/add_to_activity`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, meeting_id: id })
+      }).then(() => {
+        // Refresh history
+        fetch(`${API}/get_all_activities?token=${token}`)
+          .then(res => res.json())
+          .then(data => setMeetings(data.meetings || []));
+      });
+    }
   };
 
   // Step 2: Copy the link to clipboard
@@ -147,10 +175,32 @@ function Home() {
       {/* Recent Meetings */}
       <div className="home-recent">
         <h2 className="home-recent-title">Recent Meetings</h2>
-        <div className="home-recent-empty">
-          <p>No recent meetings yet.</p>
-          <p>Your past meetings will appear here.</p>
-        </div>
+        {loadingHistory ? (
+          <div className="home-recent-empty"><p>Loading...</p></div>
+        ) : meetings.length === 0 ? (
+          <div className="home-recent-empty">
+            <p>No recent meetings yet.</p>
+            <p>Your past meetings will appear here.</p>
+          </div>
+        ) : (
+          <div className="home-meetings-list">
+            {meetings.map((m, i) => (
+              <div key={i} className="home-meeting-row">
+                <div className="meeting-row-icon">📹</div>
+                <div className="meeting-row-info">
+                  <p className="meeting-row-id">{m.meeting_id}</p>
+                  <p className="meeting-row-date">{new Date(m.date).toLocaleString()}</p>
+                </div>
+                <button
+                  className="meeting-row-rejoin"
+                  onClick={() => navigate(`/${m.meeting_id}`)}
+                >
+                  Rejoin
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
     </div>
