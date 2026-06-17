@@ -9,23 +9,19 @@ function Home() {
   const navigate = useNavigate();
   const { user, token, logout } = useAuth();
 
+  const [activeTab, setActiveTab] = useState('meetings');
   const [joinCode, setJoinCode] = useState('');
   const [joinError, setJoinError] = useState('');
   const [meetings, setMeetings] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
-
   const [createdMeetingId, setCreatedMeetingId] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  // Fetch meeting history on page load
   useEffect(() => {
     if (!token) return;
     fetch(`${API}/get_all_activities?token=${token}`)
       .then(res => res.json())
-      .then(data => {
-        setMeetings(data.meetings || []);
-        setLoadingHistory(false);
-      })
+      .then(data => { setMeetings(data.meetings || []); setLoadingHistory(false); })
       .catch(() => setLoadingHistory(false));
   }, [token]);
 
@@ -34,19 +30,16 @@ function Home() {
     return `${seg()}-${seg()}-${seg()}`;
   };
 
-  // Step 1: Generate ID & save to history, then show the share panel
   const handleNewMeeting = () => {
     const id = generateMeetingId();
     setCreatedMeetingId(id);
     setLinkCopied(false);
-    // Save to backend activity history
     if (token) {
       fetch(`${API}/add_to_activity`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, meeting_id: id })
       }).then(() => {
-        // Refresh history
         fetch(`${API}/get_all_activities?token=${token}`)
           .then(res => res.json())
           .then(data => setMeetings(data.meetings || []));
@@ -54,23 +47,15 @@ function Home() {
     }
   };
 
-  // Step 2: Copy the link to clipboard
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/${createdMeetingId}`;
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(`${window.location.origin}/${createdMeetingId}`);
     setLinkCopied(true);
   };
 
-  // Step 3: Actually start the meeting
-  const handleStartMeeting = () => {
-    navigate(`/${createdMeetingId}`);
-  };
+  const handleStartMeeting = () => navigate(`/${createdMeetingId}`);
 
   const handleJoinMeeting = () => {
-    if (!joinCode.trim()) {
-      setJoinError('Please enter a meeting code.');
-      return;
-    }
+    if (!joinCode.trim()) { setJoinError('Please enter a meeting code.'); return; }
     const code = joinCode.trim().split('/').pop();
     navigate(`/${code}`);
   };
@@ -78,131 +63,184 @@ function Home() {
   return (
     <div className="home-wrapper">
 
-      {/* Top Navbar */}
-      <nav className="home-nav">
-        <div className="home-nav-logo">
-          <span className="home-logo-icon">📹</span>
-          <span className="home-logo-text">Confera</span>
-        </div>
-        <div className="home-nav-right">
-          <span className="home-nav-username">{user?.name}</span>
-          <button className="home-logout-btn" onClick={logout}>Logout</button>
-        </div>
-      </nav>
-
-      {/* Main Body */}
-      <div className="home-body">
-
-        {/* Left Column */}
-        <div className="home-left">
-          <h1 className="home-greeting">Video calls and meetings for everyone</h1>
-          <p className="home-subtext">Connect, collaborate and celebrate from anywhere with Confera</p>
-
-          <div className="home-actions">
-            <button className="btn-new-meeting" onClick={handleNewMeeting}>
-              📹 New Meeting
-            </button>
-
-            <div className="join-box">
-              <input
-                type="text"
-                className="join-input"
-                placeholder="Enter a code or link"
-                value={joinCode}
-                onChange={(e) => { setJoinCode(e.target.value); setJoinError(''); }}
-                onKeyDown={(e) => e.key === 'Enter' && handleJoinMeeting()}
-              />
-              <button
-                className="btn-join"
-                onClick={handleJoinMeeting}
-                disabled={!joinCode.trim()}
-              >
-                Join
-              </button>
-            </div>
-            {joinError && <p className="join-error">{joinError}</p>}
+      {/* ---- SIDEBAR ---- */}
+      <aside className="home-sidebar">
+        <div className="sidebar-logo">
+          <div className="sidebar-logo-mark">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
           </div>
+          <span className="sidebar-logo-text">Confera</span>
+        </div>
 
-          {/* ---- Meeting Ready Panel ---- */}
-          {createdMeetingId && (
-            <div className="meeting-ready-panel">
-              <p className="meeting-ready-title">✅ Your meeting is ready</p>
-              <p className="meeting-ready-subtitle">
-                Share this link with your friends so they can join:
-              </p>
+        <nav className="sidebar-nav">
+          <button
+            className={`sidebar-nav-item ${activeTab === 'meetings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('meetings')}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+            </svg>
+            Meetings
+          </button>
+          <button
+            className={`sidebar-nav-item ${activeTab === 'history' ? 'active' : ''}`}
+            onClick={() => setActiveTab('history')}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+            </svg>
+            History
+          </button>
+        </nav>
 
-              {/* Link display box */}
-              <div className="meeting-link-box">
-                <span className="meeting-link-text">
-                  {window.location.origin}/{createdMeetingId}
-                </span>
-                <button className="btn-copy-link" onClick={handleCopyLink}>
-                  {linkCopied ? '✓ Copied' : 'Copy'}
-                </button>
-              </div>
-
-              <p className="meeting-ready-note">
-                Share the link, then click Start Meeting when ready.
-              </p>
-
-              <button className="btn-start-meeting" onClick={handleStartMeeting}>
-                Start Meeting →
-              </button>
+        <div className="sidebar-bottom">
+          <div className="sidebar-user">
+            <div className="sidebar-avatar">
+              {user?.name?.charAt(0).toUpperCase()}
             </div>
-          )}
-
-          <hr className="home-divider" />
-          <p className="home-hint">
-            Click{' '}
-            <a href="#" onClick={(e) => { e.preventDefault(); handleNewMeeting(); }}>
-              New Meeting
-            </a>{' '}
-            to get a shareable link, or join with a code above.
-          </p>
-        </div>
-
-        {/* Right Column */}
-        <div className="home-right">
-          <img
-            src="/mobile.png"
-            alt="Video conferencing illustration"
-            className="home-illustration"
-          />
-        </div>
-
-      </div>
-
-      {/* Recent Meetings */}
-      <div className="home-recent">
-        <h2 className="home-recent-title">Recent Meetings</h2>
-        {loadingHistory ? (
-          <div className="home-recent-empty"><p>Loading...</p></div>
-        ) : meetings.length === 0 ? (
-          <div className="home-recent-empty">
-            <p>No recent meetings yet.</p>
-            <p>Your past meetings will appear here.</p>
+            <div className="sidebar-user-info">
+              <p className="sidebar-user-name">{user?.name}</p>
+              <p className="sidebar-user-handle">@{user?.username}</p>
+            </div>
           </div>
-        ) : (
-          <div className="home-meetings-list">
-            {meetings.map((m, i) => (
-              <div key={i} className="home-meeting-row">
-                <div className="meeting-row-icon">📹</div>
-                <div className="meeting-row-info">
-                  <p className="meeting-row-id">{m.meeting_id}</p>
-                  <p className="meeting-row-date">{new Date(m.date).toLocaleString()}</p>
+          <button className="sidebar-logout" onClick={logout} title="Logout">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+            </svg>
+          </button>
+        </div>
+      </aside>
+
+      {/* ---- MAIN CONTENT ---- */}
+      <main className="home-main">
+
+        {/* MEETINGS TAB */}
+        {activeTab === 'meetings' && (
+          <div className="home-content">
+            <div className="home-header">
+              <h1>Welcome back, <span className="home-header-name">{user?.name?.split(' ')[0]}</span> 👋</h1>
+              <p>Start a new meeting or join one with a code.</p>
+            </div>
+
+            <div className="home-cards">
+              {/* New Meeting Card */}
+              <div className="action-card action-card-primary">
+                <div className="action-card-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                  </svg>
                 </div>
-                <button
-                  className="meeting-row-rejoin"
-                  onClick={() => navigate(`/${m.meeting_id}`)}
-                >
-                  Rejoin
+                <div className="action-card-body">
+                  <h3>New Meeting</h3>
+                  <p>Create an instant meeting and share the link</p>
+                </div>
+                <button className="btn-primary" onClick={handleNewMeeting}>
+                  Start →
                 </button>
               </div>
-            ))}
+
+              {/* Join Meeting Card */}
+              <div className="action-card action-card-secondary">
+                <div className="action-card-icon-wrap secondary">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                    <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
+                  </svg>
+                </div>
+                <div className="action-card-body">
+                  <h3>Join a Meeting</h3>
+                  <p>Enter a code or paste a meeting link</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Join Input Row */}
+            <div className="join-section">
+              <div className="join-input-row">
+                <input
+                  className="join-code-input"
+                  type="text"
+                  placeholder="Enter meeting code  e.g. abcd-efgh-1234"
+                  value={joinCode}
+                  onChange={e => { setJoinCode(e.target.value); setJoinError(''); }}
+                  onKeyDown={e => e.key === 'Enter' && handleJoinMeeting()}
+                />
+                <button className="btn-primary" onClick={handleJoinMeeting}>
+                  Join
+                </button>
+              </div>
+              {joinError && <p className="join-error">{joinError}</p>}
+            </div>
+
+            {/* Meeting Ready Panel */}
+            {createdMeetingId && (
+              <div className="ready-panel">
+                <div className="ready-panel-header">
+                  <span className="ready-dot"></span>
+                  <p>Your meeting is ready — share the link below</p>
+                </div>
+                <div className="ready-link-row">
+                  <code className="ready-link-text">
+                    {window.location.origin}/{createdMeetingId}
+                  </code>
+                  <button className="btn-copy" onClick={handleCopyLink}>
+                    {linkCopied ? '✓ Copied' : 'Copy Link'}
+                  </button>
+                </div>
+                <button className="btn-start-meeting" onClick={handleStartMeeting}>
+                  Start Meeting →
+                </button>
+              </div>
+            )}
           </div>
         )}
-      </div>
 
+        {/* HISTORY TAB */}
+        {activeTab === 'history' && (
+          <div className="home-content">
+            <div className="home-header">
+              <h1>Meeting History</h1>
+              <p>All your past meetings in one place.</p>
+            </div>
+
+            {loadingHistory ? (
+              <div className="history-empty"><p>Loading...</p></div>
+            ) : meetings.length === 0 ? (
+              <div className="history-empty">
+                <div className="history-empty-icon">📅</div>
+                <p>No meetings yet</p>
+                <span>Your past meetings will appear here once you start one.</span>
+              </div>
+            ) : (
+              <div className="history-list">
+                <div className="history-list-header">
+                  <span>Meeting ID</span>
+                  <span>Date & Time</span>
+                  <span></span>
+                </div>
+                {meetings.map((m, i) => (
+                  <div key={i} className="history-row">
+                    <div className="history-row-left">
+                      <div className="history-row-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                          <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                        </svg>
+                      </div>
+                      <code className="history-meeting-id">{m.meeting_id}</code>
+                    </div>
+                    <span className="history-date">{new Date(m.date).toLocaleString()}</span>
+                    <button className="btn-rejoin" onClick={() => navigate(`/${m.meeting_id}`)}>
+                      Rejoin
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+      </main>
     </div>
   );
 }
