@@ -58,6 +58,22 @@ export const connectToSocket = (server)=>{
             }
         })
 
+        // Emoji Reaction — broadcast to everyone in the room
+        socket.on("reaction", (emoji, sender) => {
+            const [matchingRoom, found] = Object.entries(connections)
+                .reduce(([room, isFound], [roomKey, roomValue]) => {
+                    if (!isFound && roomValue.includes(socket.id)) return [roomKey, true];
+                    return [room, isFound];
+                }, ['', false]);
+
+            if (found) {
+                connections[matchingRoom].forEach(elem => {
+                    io.to(elem).emit("reaction", emoji, sender);
+                });
+            }
+        })
+
+
         socket.on("disconnect",()=>{
             var diffTime = Math.abs(timeOnline[socket.id] - new Date());
             var key;
