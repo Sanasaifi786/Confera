@@ -349,21 +349,62 @@ function VideoMeetComponent() {
     return (
         <div className="video-meet-container">
             {askForUsername === true ?
-                <div className="lobby-container">
-                    <div className="lobby-card">
-                        <h2>Enter into Lobby</h2>
-                        <TextField label="Username" variant="outlined" value={username} onChange={e => setUsername(e.target.value)} className="lobby-input" />
-                        <Button variant="contained" onClick={connect} className="join-btn">Join</Button>
-                        <div className="local-video-wrapper">
-                            {!videoAvailable && (
-                                <div className="video-avatar-fallback">
-                                    {username ? username.charAt(0).toUpperCase() : 'U'}
-                                </div>
-                            )}
-                            <video ref={localVideoRef} autoPlay muted className="local-video"></video>
+                <div className="lobby-page">
+
+                    {/* Top Header */}
+                    <header className="lobby-header">
+                        <div className="lobby-header-logo">
+                            <div className="lobby-logo-mark">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                </svg>
+                            </div>
+                            <span className="lobby-logo-text">Confera</span>
                         </div>
+                    </header>
+
+                    {/* Main Body */}
+                    <div className="lobby-body">
+
+                        {/* Left — Video Preview */}
+                        <div className="lobby-video-side">
+                            <div className="lobby-video-box">
+                                {!videoAvailable && (
+                                    <div className="lobby-avatar-fallback">
+                                        {username ? username.charAt(0).toUpperCase() : '?'}
+                                    </div>
+                                )}
+                                <video ref={localVideoRef} autoPlay muted className="lobby-video-el"></video>
+                            </div>
+                            <p className="lobby-video-label">Your camera preview</p>
+                        </div>
+
+                        {/* Right — Join Panel */}
+                        <div className="lobby-join-side">
+                            <h1 className="lobby-join-title">Ready to join?</h1>
+                            <p className="lobby-join-sub">Enter your name and join the meeting</p>
+
+                            <input
+                                type="text"
+                                className="lobby-name-input"
+                                placeholder="Your name"
+                                value={username}
+                                onChange={e => setUsername(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && connect()}
+                            />
+
+                            <button
+                                className="lobby-join-btn"
+                                onClick={connect}
+                                disabled={!username.trim()}
+                            >
+                                Join Meeting →
+                            </button>
+                        </div>
+
                     </div>
-                </div> :
+                </div>
+ :
                 <div className="meet-container">
                     <div className="video-grid-container">
                         <div className="video-item">
