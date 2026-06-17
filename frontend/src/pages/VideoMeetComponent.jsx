@@ -256,6 +256,74 @@ function VideoMeetComponent() {
         getMedia();
     }
 
+    // ---- MUTE MICROPHONE ----
+    let handleMute = () => {
+        setAudio(prev => {
+            const newAudio = !prev;
+            if (window.localStream) {
+                window.localStream.getAudioTracks().forEach(track => {
+                    track.enabled = newAudio;
+                });
+            }
+            return newAudio;
+        });
+    }
+
+    // ---- TOGGLE CAMERA ----
+    let handleVideo = () => {
+        setVideo(prev => {
+            const newVideo = !prev;
+            if (window.localStream) {
+                window.localStream.getVideoTracks().forEach(track => {
+                    track.enabled = newVideo;
+                });
+            }
+            return newVideo;
+        });
+    }
+
+    // ---- SCREEN SHARE ----
+    let handleScreen = async () => {
+        if (!screen) {
+            try {
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                const screenTrack = screenStream.getVideoTracks()[0];
+
+                // Replace video track in all peer connections
+                for (let id in connections) {
+                    const sender = connections[id]
+                        .getSenders()
+                        .find(s => s.track && s.track.kind === 'video');
+                    if (sender) sender.replaceTrack(screenTrack);
+                }
+
+                // Show screen on local preview
+                localVideoRef.current.srcObject = screenStream;
+                setScreen(true);
+
+                // When screen share ends (user clicks Stop Sharing)
+                screenTrack.onended = () => {
+                    handleScreen();
+                };
+            } catch (e) {
+                console.log(e);
+            }
+        } else {
+            // Revert back to camera
+            if (window.localStream) {
+                const cameraTrack = window.localStream.getVideoTracks()[0];
+                for (let id in connections) {
+                    const sender = connections[id]
+                        .getSenders()
+                        .find(s => s.track && s.track.kind === 'video');
+                    if (sender) sender.replaceTrack(cameraTrack);
+                }
+                localVideoRef.current.srcObject = window.localStream;
+            }
+            setScreen(false);
+        }
+    }
+
     let silence = () => {
         let ctx = new AudioContext();
         let oscillator = ctx.createOscillator();
@@ -305,6 +373,7 @@ function VideoMeetComponent() {
                                 </div>
                             )}
                             <video ref={localVideoRef} autoPlay muted className="local-video active"></video>
+                            <div className="video-name-tag">You</div>
                         </div>
                         {videos.map((videoItem, index) => (
                             <div key={index} className="video-item">
@@ -315,42 +384,67 @@ function VideoMeetComponent() {
                                         }
                                     }}
                                     autoPlay
+                                    playsInline
                                     className="remote-video"
                                 ></video>
+                                <div className="video-name-tag">Participant {index + 1}</div>
                             </div>
                         ))}
                     </div>
-                    
-                    <div className="control-bar">
-                        <Button variant="contained" className="leave-btn" onClick={() => window.location.href="/"}>
-                            Leave Meeting
-                        </Button>
-                    </div>
 
-                    <div className="chat-sidebar">
-                        <div className="chat-messages">
-                            {messages.map((msg, index) => (
-                                <div key={index} className="chat-message">
-                                    <strong>{msg.sender}</strong>: {msg.data}
-                                </div>
-                            ))}
+                    {/* Control Bar */}
+                    <div className="control-bar">
+
+                        {/* Mute Button */}
+                        <button
+                            className={`ctrl-btn ${!audio ? 'ctrl-btn-off' : ''}`}
+                            onClick={handleMute}
+                            title={audio ? 'Mute' : 'Unmute'}
+                        >
+                            {audio
+                                ? <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                                : <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.34 3 3 3 .23 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c.57-.08 1.12-.24 1.64-.46L19.73 21 21 19.73 4.27 3z"/></svg>
+                            }
+                        </button>
+
+                        {/* Camera Button */}
+                        <button
+                            className={`ctrl-btn ${!video ? 'ctrl-btn-off' : ''}`}
+                            onClick={handleVideo}
+                            title={video ? 'Turn off camera' : 'Turn on camera'}
+                        >
+                            {video
+                                ? <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                                : <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M21 6.5l-4-4-15 15 1.41 1.41L9 13.33V17c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4V6.5zM16 16H11.33l5-5L16 16zM4 7.33L2.5 5.83 2 6.5V17c0 .55.45 1 1 1h14.33l-2-2H4V7.33z"/></svg>
+                            }
+                        </button>
+
+                        {/* Screen Share Button */}
+                        {screenAvailable && (
+                            <button
+                                className={`ctrl-btn ${screen ? 'ctrl-btn-active' : ''}`}
+                                onClick={handleScreen}
+                                title={screen ? 'Stop sharing' : 'Share screen'}
+                            >
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zm-7-3.53v-2.19c-2.78.48-4.34 1.71-5.5 3.72.14-1.4.46-4.27 3.5-5.93V8l4 3.5-2 1z"/></svg>
+                            </button>
+                        )}
+
+                        {/* Participant Count */}
+                        <div className="ctrl-participant-count">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>{videos.length + 1}</span>
                         </div>
-                        <div className="chat-input-container">
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                size="small"
-                                placeholder="Type a message"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                        sendMessage();
-                                    }
-                                }}
-                            />
-                            <Button variant="contained" color="primary" onClick={sendMessage} className="chat-send-btn">Send</Button>
-                        </div>
+
+                        {/* Leave Button */}
+                        <button
+                            className="ctrl-btn ctrl-btn-leave"
+                            onClick={() => window.location.href = '/'}
+                            title="Leave meeting"
+                        >
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </button>
+
                     </div>
                 </div>
             }
