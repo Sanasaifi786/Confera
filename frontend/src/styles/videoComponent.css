@@ -148,34 +148,100 @@
 /* Control Bar */
 .control-bar {
     position: absolute;
-    bottom: 30px;
+    bottom: 28px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(30, 30, 30, 0.8);
-    backdrop-filter: blur(10px);
-    padding: 15px 30px;
-    border-radius: 30px;
+    background: rgba(20, 20, 25, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 12px 20px;
+    border-radius: 40px;
     display: flex;
-    gap: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     z-index: 10;
 }
 
-.control-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50% !important;
-    min-width: 0 !important;
+/* Base icon button */
+.ctrl-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    flex-shrink: 0;
 }
 
-.leave-btn {
-    background-color: #ef4444 !important;
-    color: white !important;
+.ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.08);
 }
 
-.leave-btn:hover {
-    background-color: #dc2626 !important;
+/* Muted / Camera off state */
+.ctrl-btn-off {
+    background: rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
+
+.ctrl-btn-off:hover {
+    background: rgba(239, 68, 68, 0.4);
+}
+
+/* Screen sharing active state */
+.ctrl-btn-active {
+    background: rgba(99, 102, 241, 0.35);
+    color: #a5b4fc;
+}
+
+.ctrl-btn-active:hover {
+    background: rgba(99, 102, 241, 0.5);
+}
+
+/* Red leave button */
+.ctrl-btn-leave {
+    background: #ef4444;
+    color: white;
+}
+
+.ctrl-btn-leave:hover {
+    background: #dc2626;
+    transform: scale(1.08);
+}
+
+/* Participant count badge */
+.ctrl-participant-count {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #9ca3af;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0 8px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    height: 30px;
+}
+
+/* Name tag on each video tile */
+.video-name-tag {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    z-index: 3;
+    backdrop-filter: blur(4px);
 }
 
 /* Hide Chat For Now */
