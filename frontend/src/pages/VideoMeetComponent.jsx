@@ -34,6 +34,12 @@ function VideoMeetComponent() {
     const videoRef = useRef();
     let [videos, setVideos] = useState([]);
 
+    // Emoji reactions
+    let [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    let [reactions, setReactions] = useState([]); // floating emoji list
+
+    const EMOJIS = ['👍', '❤️', '😂', '😮', '👏', '🎉', '🔥', '🙌'];
+
     const getPermissions = async () => {
         try {
             const videoPermission = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -238,6 +244,11 @@ function VideoMeetComponent() {
         socketRef.current.on('user-left', (id) => {
             setVideos((videos) => videos.filter((video) => video.socketId !== id));
         });
+
+        // Listen for incoming emoji reactions from other participants
+        socketRef.current.on('reaction', (emoji, sender) => {
+            spawnReaction(emoji, sender);
+        });
         
         socketRef.current.on("connect", () => {
             socketIdRef.current = socketRef.current.id;
@@ -346,6 +357,27 @@ function VideoMeetComponent() {
         setMessage("");
     }
 
+    // Spawn a floating emoji animation on screen
+    let spawnReaction = (emoji, sender) => {
+        const id = Date.now() + Math.random();
+        const left = 10 + Math.random() * 80; // random horizontal position %
+        setReactions(prev => [...prev, { id, emoji, sender, left }]);
+        // Auto-remove after animation completes (3s)
+        setTimeout(() => {
+            setReactions(prev => prev.filter(r => r.id !== id));
+        }, 3000);
+    }
+
+    // Send emoji via socket and show locally too
+    let sendReaction = (emoji) => {
+        if (socketRef.current) {
+            socketRef.current.emit("reaction", emoji, username);
+        }
+        spawnReaction(emoji, username);
+        setShowEmojiPicker(false);
+    }
+
+
     return (
         <div className="video-meet-container">
             {askForUsername === true ?
@@ -406,7 +438,23 @@ function VideoMeetComponent() {
                 </div>
  :
                 <div className="meet-container">
+
+                    {/* Floating Emoji Reactions Overlay */}
+                    <div className="reactions-overlay">
+                        {reactions.map(r => (
+                            <div
+                                key={r.id}
+                                className="reaction-float"
+                                style={{ left: `${r.left}%` }}
+                            >
+                                <span className="reaction-emoji">{r.emoji}</span>
+                                <span className="reaction-sender">{r.username}</span>
+                            </div>
+                        ))}
+                    </div>
+
                     <div className="video-grid-container">
+
                         <div className="video-item">
                             {(!videoAvailable || video === false) && (
                                 <div className="video-avatar-fallback">
@@ -470,6 +518,30 @@ function VideoMeetComponent() {
                                 <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zm-7-3.53v-2.19c-2.78.48-4.34 1.71-5.5 3.72.14-1.4.46-4.27 3.5-5.93V8l4 3.5-2 1z"/></svg>
                             </button>
                         )}
+
+                        {/* Emoji Reaction Button */}
+                        <div className="emoji-picker-wrapper">
+                            {showEmojiPicker && (
+                                <div className="emoji-picker-popup">
+                                    {EMOJIS.map(emoji => (
+                                        <button
+                                            key={emoji}
+                                            className="emoji-option"
+                                            onClick={() => sendReaction(emoji)}
+                                        >
+                                            {emoji}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                            <button
+                                className={`ctrl-btn ${showEmojiPicker ? 'ctrl-btn-active' : ''}`}
+                                onClick={() => setShowEmojiPicker(prev => !prev)}
+                                title="Send reaction"
+                            >
+                                😊
+                            </button>
+                        </div>
 
                         {/* Participant Count */}
                         <div className="ctrl-participant-count">
