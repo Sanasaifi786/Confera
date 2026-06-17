@@ -363,3 +363,96 @@
 .chat-sidebar {
     display: none;
 }
+
+/* ===== EMOJI REACTIONS ===== */
+
+/* Wrapper to position picker above button */
+.emoji-picker-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Emoji picker popup — floats above the control bar */
+.emoji-picker-popup {
+    position: absolute;
+    bottom: 68px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 28, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 6px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    animation: popupIn 0.18s ease;
+    white-space: nowrap;
+}
+
+@keyframes popupIn {
+    from { opacity: 0; transform: translateX(-50%) scale(0.85) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+}
+
+/* Individual emoji option button */
+.emoji-option {
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 10px;
+    transition: transform 0.15s, background 0.15s;
+    line-height: 1;
+}
+
+.emoji-option:hover {
+    transform: scale(1.3);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== FLOATING REACTIONS OVERLAY ===== */
+.reactions-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    overflow: hidden;
+}
+
+/* Each floating emoji rises from bottom */
+.reaction-float {
+    position: absolute;
+    bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    animation: floatUp 3s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0%   { opacity: 1;   transform: translateY(0) scale(1); }
+    70%  { opacity: 1;   transform: translateY(-200px) scale(1.1); }
+    100% { opacity: 0;   transform: translateY(-320px) scale(0.8); }
+}
+
+.reaction-emoji {
+    font-size: 2.8rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    line-height: 1;
+}
+
+.reaction-sender {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-family: var(--font);
+    white-space: nowrap;
+}
+
