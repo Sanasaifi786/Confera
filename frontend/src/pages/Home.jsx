@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import './Home.css';
+import '../styles/Home.css';
 
 const API = 'http://localhost:8000/api/v1/user';
 
