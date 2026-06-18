@@ -705,7 +705,7 @@ function VideoMeetComponent() {
                                             }`}
                                         >
                                             {msg.sender !== username && (
-                                                <span className="chat-sender">{msg.username}</span>
+                                                <span className="chat-sender">{msg.sender}</span>
                                             )}
                                             <p className="chat-text">{msg.data}</p>
                                         </div>
