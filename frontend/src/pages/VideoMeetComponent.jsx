@@ -36,9 +36,14 @@ function VideoMeetComponent() {
 
     // Emoji reactions
     let [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    let [reactions, setReactions] = useState([]); // floating emoji list
-
+    let [reactions, setReactions] = useState([]);
     const EMOJIS = ['👍', '❤️', '😂', '😮', '👏', '🎉', '🔥', '🙌'];
+
+    // Host / Waiting Room
+    let [isHost, setIsHost] = useState(false);
+    let [isWaiting, setIsWaiting] = useState(false);
+    let [admissionDenied, setAdmissionDenied] = useState(false);
+    let [admissionRequests, setAdmissionRequests] = useState([]); // [{socketId, name}]
 
     const getPermissions = async () => {
         try {
@@ -175,69 +180,69 @@ function VideoMeetComponent() {
         }
     }
 
-    let connectToSocketServer = () => {
-        socketRef.current = io.connect(server_url, { secure: true });
-        socketRef.current.on('signal', gotMessageFromServer);
-        socketRef.current.on('user-joined', (id, clients) => {
-            clients.forEach((socketListId) => {
-                if (!connections[socketListId]) {
-                    connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
-                    
-                    connections[socketListId].onicecandidate = (event) => {
-                        if (event.candidate != null) {
-                            socketRef.current.emit("signal", socketListId, JSON.stringify({ 'ice': event.candidate }));
-                        }
-                    };
-
-                    connections[socketListId].ontrack = (event) => {
-                        console.log("GOT REMOTE TRACK", event.streams);
-                        const remoteStream = event.streams[0];
-                        if (!remoteStream) return;
-
-                        setVideos(prevVideos => {
-                            const exists = prevVideos.find(v => v.socketId === socketListId);
-                            if (exists) {
-                                return prevVideos.map(v =>
-                                    v.socketId === socketListId ? { ...v, stream: remoteStream } : v
-                                );
-                            }
-                            return [...prevVideos, { socketId: socketListId, stream: remoteStream }];
-                        });
-                    };
-
-                    if (window.localStream !== undefined && window.localStream !== null) {
-                        window.localStream.getTracks().forEach(track => {
-                            connections[socketListId].addTrack(track, window.localStream);
-                        });
-                    } else {
-                        let blackSilence = (...args) => new MediaStream([black(...args), silence()]);
-                        window.localStream = blackSilence();
-                        window.localStream.getTracks().forEach(track => {
-                            connections[socketListId].addTrack(track, window.localStream);
-                        });
+    let handleUserJoined = (id, clients) => {
+        clients.forEach((socketListId) => {
+            if (!connections[socketListId]) {
+                connections[socketListId] = new RTCPeerConnection(peerConfigConnections);
+                
+                connections[socketListId].onicecandidate = (event) => {
+                    if (event.candidate != null) {
+                        socketRef.current.emit("signal", socketListId, JSON.stringify({ 'ice': event.candidate }));
                     }
-                }
-            });
+                };
 
-            if (id === socketIdRef.current) {
-                for (let id2 in connections) {
-                    if (id2 === socketIdRef.current) continue;
-                    try {
-                        window.localStream.getTracks().forEach(track => {
-                            connections[id2].addTrack(track, window.localStream);
-                        });
-                    } catch (e) { }
+                connections[socketListId].ontrack = (event) => {
+                    const remoteStream = event.streams[0];
+                    if (!remoteStream) return;
+                    setVideos(prevVideos => {
+                        const exists = prevVideos.find(v => v.socketId === socketListId);
+                        if (exists) {
+                            return prevVideos.map(v =>
+                                v.socketId === socketListId ? { ...v, stream: remoteStream } : v
+                            );
+                        }
+                        return [...prevVideos, { socketId: socketListId, stream: remoteStream }];
+                    });
+                };
 
-                    connections[id2].createOffer().then((description) => {
-                        connections[id2].setLocalDescription(description)
-                            .then(() => {
-                                socketRef.current.emit("signal", id2, JSON.stringify({ "sdp": connections[id2].localDescription }));
-                            })
-                            .catch(e => console.log(e));
+                if (window.localStream !== undefined && window.localStream !== null) {
+                    window.localStream.getTracks().forEach(track => {
+                        connections[socketListId].addTrack(track, window.localStream);
+                    });
+                } else {
+                    let blackSilence = (...args) => new MediaStream([black(...args), silence()]);
+                    window.localStream = blackSilence();
+                    window.localStream.getTracks().forEach(track => {
+                        connections[socketListId].addTrack(track, window.localStream);
                     });
                 }
             }
         });
+
+        if (id === socketIdRef.current) {
+            for (let id2 in connections) {
+                if (id2 === socketIdRef.current) continue;
+                try {
+                    window.localStream.getTracks().forEach(track => {
+                        connections[id2].addTrack(track, window.localStream);
+                    });
+                } catch (e) { }
+
+                connections[id2].createOffer().then((description) => {
+                    connections[id2].setLocalDescription(description)
+                        .then(() => {
+                            socketRef.current.emit("signal", id2, JSON.stringify({ "sdp": connections[id2].localDescription }));
+                        })
+                        .catch(e => console.log(e));
+                });
+            }
+        }
+    };
+
+    let connectToSocketServer = () => {
+        socketRef.current = io.connect(server_url, { secure: true });
+        socketRef.current.on('signal', gotMessageFromServer);
+
 
         socketRef.current.on('receive-message', addMessage);
 
@@ -245,14 +250,54 @@ function VideoMeetComponent() {
             setVideos((videos) => videos.filter((video) => video.socketId !== id));
         });
 
-        // Listen for incoming emoji reactions from other participants
+        // Listen for incoming emoji reactions
         socketRef.current.on('reaction', (emoji, sender) => {
             spawnReaction(emoji, sender);
         });
-        
+
+        // --- ADMISSION SYSTEM ---
+        // This user is the host
+        socketRef.current.on('you-are-host', () => {
+            setIsHost(true);
+            setAskForUsername(false);
+        });
+
+        // This user must wait for admission
+        socketRef.current.on('waiting-for-admission', () => {
+            setIsWaiting(true);
+            setAskForUsername(false);
+        });
+
+        // Host receives a request to admit someone
+        socketRef.current.on('admission-request', (socketId, name) => {
+            setAdmissionRequests(prev => [
+                ...prev.filter(r => r.socketId !== socketId),
+                { socketId, name }
+            ]);
+        });
+
+        // Host: waiting user disconnected, remove from list
+        socketRef.current.on('waiting-user-left', (socketId) => {
+            setAdmissionRequests(prev => prev.filter(r => r.socketId !== socketId));
+        });
+
+        // This user was admitted by host — enter meeting
+        socketRef.current.on('user-joined', (id, clients) => {
+            // If we were waiting, we are now admitted
+            setIsWaiting(false);
+            handleUserJoined(id, clients);
+        });
+
+        // This user was denied by host
+        socketRef.current.on('join-denied', () => {
+            setAdmissionDenied(true);
+            setIsWaiting(false);
+        });
+
         socketRef.current.on("connect", () => {
             socketIdRef.current = socketRef.current.id;
-            socketRef.current.emit('join-call', window.location.href);
+            // Pass username so host sees requester's name
+            socketRef.current.emit('join-call', window.location.href, username);
         });
     }
 
@@ -436,8 +481,28 @@ function VideoMeetComponent() {
 
                     </div>
                 </div>
- :
+            : admissionDenied ? (
+                <div className="waiting-page">
+                    <div className="waiting-card denied">
+                        <div className="waiting-icon denied-icon">🚫</div>
+                        <h2>Access Denied</h2>
+                        <p>The host did not admit you to this meeting.</p>
+                        <button className="waiting-leave-btn" onClick={() => window.location.href = '/'}>Go Home</button>
+                    </div>
+                </div>
+            ) : isWaiting ? (
+                <div className="waiting-page">
+                    <div className="waiting-card">
+                        <div className="waiting-spinner"></div>
+                        <h2>Waiting for host to admit you…</h2>
+                        <p>The host will let you in soon. Please wait.</p>
+                        <div className="waiting-user-info">Joining as <strong>{username}</strong></div>
+                        <button className="waiting-leave-btn" onClick={() => window.location.href = '/'}>Cancel</button>
+                    </div>
+                </div>
+            ) : (
                 <div className="meet-container">
+
 
                     {/* Floating Emoji Reactions Overlay */}
                     <div className="reactions-overlay">
@@ -448,10 +513,48 @@ function VideoMeetComponent() {
                                 style={{ left: `${r.left}%` }}
                             >
                                 <span className="reaction-emoji">{r.emoji}</span>
-                                <span className="reaction-sender">{r.username}</span>
+                                <span className="reaction-sender">{r.sender}</span>
                             </div>
                         ))}
                     </div>
+
+                    {/* Host Admission Panel */}
+                    {isHost && admissionRequests.length > 0 && (
+                        <div className="admission-panel">
+                            <div className="admission-panel-title">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                </svg>
+                                Waiting to join
+                            </div>
+                            {admissionRequests.map(req => (
+                                <div key={req.socketId} className="admission-request-row">
+                                    <div className="admission-avatar">
+                                        {req.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="admission-name">{req.name}</span>
+                                    <button
+                                        className="admission-btn admit"
+                                        onClick={() => {
+                                            socketRef.current.emit('admit-user', window.location.href, req.socketId);
+                                            setAdmissionRequests(prev => prev.filter(r => r.socketId !== req.socketId));
+                                        }}
+                                    >
+                                        Admit
+                                    </button>
+                                    <button
+                                        className="admission-btn deny"
+                                        onClick={() => {
+                                            socketRef.current.emit('deny-user', window.location.href, req.socketId);
+                                            setAdmissionRequests(prev => prev.filter(r => r.socketId !== req.socketId));
+                                        }}
+                                    >
+                                        Deny
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="video-grid-container">
 
@@ -462,7 +565,9 @@ function VideoMeetComponent() {
                                 </div>
                             )}
                             <video ref={localVideoRef} autoPlay muted className="local-video active"></video>
-                            <div className="video-name-tag">You</div>
+                            <div className="video-name-tag">
+                                You {isHost && <span className="host-badge">HOST</span>}
+                            </div>
                         </div>
                         {videos.map((videoItem, index) => (
                             <div key={index} className="video-item">
@@ -560,7 +665,7 @@ function VideoMeetComponent() {
 
                     </div>
                 </div>
-            }
+            )}
         </div>
     )
 }
