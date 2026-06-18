@@ -39,6 +39,9 @@ function VideoMeetComponent() {
     let [reactions, setReactions] = useState([]);
     const EMOJIS = ['👍', '❤️', '😂', '😮', '👏', '🎉', '🔥', '🙌'];
 
+    // Chat sidebar
+    let [showChat, setShowChat] = useState(false);
+
     // Host / Waiting Room
     let [isHost, setIsHost] = useState(false);
     let [isWaiting, setIsWaiting] = useState(false);
@@ -501,7 +504,7 @@ function VideoMeetComponent() {
                     </div>
                 </div>
             ) : (
-                <div className="meet-container">
+                <div className={`meet-container ${showChat ? 'chat-open' : ''}`}>
 
 
                     {/* Floating Emoji Reactions Overlay */}
@@ -648,6 +651,18 @@ function VideoMeetComponent() {
                             </button>
                         </div>
 
+                        {/* Chat Toggle Button */}
+                        <button
+                            className={`ctrl-btn ${showChat ? 'ctrl-btn-active' : ''}`}
+                            onClick={() => { setShowChat(prev => !prev); setNewMessage(0); }}
+                            title="Chat"
+                        >
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                            {newMessage > 0 && !showChat && (
+                                <span className="chat-badge">{newMessage}</span>
+                            )}
+                        </button>
+
                         {/* Participant Count */}
                         <div className="ctrl-participant-count">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -664,6 +679,60 @@ function VideoMeetComponent() {
                         </button>
 
                     </div>
+
+                    {/* Chat Sidebar */}
+                    {showChat && (
+                        <div className="chat-sidebar">
+                            <div className="chat-header">
+                                <span>In-call messages</span>
+                                <button className="chat-close-btn" onClick={() => setShowChat(false)}>
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                                </button>
+                            </div>
+
+                            <div className="chat-messages">
+                                {messages.length === 0 ? (
+                                    <div className="chat-empty">
+                                        <p>💬 No messages yet</p>
+                                        <span>Send a message to everyone in this call</span>
+                                    </div>
+                                ) : (
+                                    messages.map((msg, index) => (
+                                        <div
+                                            key={index}
+                                            className={`chat-bubble ${
+                                                msg.sender === username ? 'chat-bubble-self' : 'chat-bubble-other'
+                                            }`}
+                                        >
+                                            {msg.sender !== username && (
+                                                <span className="chat-sender">{msg.username}</span>
+                                            )}
+                                            <p className="chat-text">{msg.data}</p>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            <div className="chat-input-area">
+                                <input
+                                    className="chat-input"
+                                    type="text"
+                                    placeholder="Send a message..."
+                                    value={message}
+                                    onChange={e => setMessage(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                                />
+                                <button
+                                    className="chat-send-btn"
+                                    onClick={sendMessage}
+                                    disabled={!message.trim()}
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             )}
         </div>
