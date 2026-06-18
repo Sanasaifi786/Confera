@@ -50,12 +50,12 @@
   padding: 1rem 2rem;
   border-radius: 12px;
   margin-top: 1.9rem;
-  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.4);
-  transition: all 0.2s;
+  /* box-shadow: 0 8px 28px rgba(124, 58, 237, 0.4);
+  transition: all 0.2s; */
 }
 .landingMainContainer > div:nth-child(1) div[role='button']:hover{
   transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(124, 58, 237, 0.55);
+   box-shadow: 0 12px 36px rgba(124, 58, 237, 0.55);
 }
 .landingMainContainer > div:nth-child(1) div[role='button'] a{
  text-decoration: none;
