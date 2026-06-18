@@ -68,6 +68,16 @@
   width: auto;
 }
 
+.navHeader h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  user-select: none;
+}
+
 /* Glassmorphic Navbar */
 /* .landingPageContainer nav {
   margin: 1.5rem 2.5rem;
