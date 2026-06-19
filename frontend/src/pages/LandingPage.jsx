@@ -60,53 +60,72 @@ function LandingPage() {
       )}
 
       <nav>
-        <div className="sidebar-logo">
+        <div className="navHeader">
           <div className="sidebar-logo-mark">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
             </svg>
           </div>
           <h2 className="sidebar-logo-text">Confera</h2>
         </div>
         <div className="navList">
-            {user ? (
-              <>
-                <p style={{ cursor: 'default', color: '#a5b4fc', fontWeight: '600' }}>Hello, {user.name}</p>
-                <div className="loginBtn" role='button' onClick={logout}>
-                    <p>Logout</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <p onClick={() => setShowGuestModal(true)}>Join as Guest</p>
-                <p onClick={() => navigate('/auth?mode=register')}>Register</p>
-                <div className="loginBtn" role='button' onClick={() => navigate('/auth?mode=login')}>
-                    <p>Login</p>
-                </div>
-              </>
-            )}
+          {user ? (
+            <>
+              <p style={{ cursor: 'default', color: '#a5b4fc', fontWeight: '600' }}>Hello, {user.name}</p>
+              <div className="loginBtn" role='button' onClick={logout}>
+                <p>Logout</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <p onClick={() => setShowGuestModal(true)}>Join as Guest</p>
+              <p onClick={() => navigate('/auth?mode=register')}>Register</p>
+              <div className="loginBtn" role='button' onClick={() => navigate('/auth?mode=login')}>
+                <p>Login</p>
+              </div>
+            </>
+          )}
         </div>
       </nav>
 
       <div className="landingMainContainer">
-          <div>
-            <h1>
-              Connect with your loved ones
-            </h1>
-            <p>Cover a distance by Confera</p>
-            <div role='button'>
-              {user ? (
-                <Link to={"/home"}>Go to Dashboard</Link>
-              ) : (
-                <Link to={"/auth?mode=register"}>Get Started</Link>
-              )}
+        <div>
+          <h1>
+            Connect with your loved ones
+          </h1>
+          <p>Connect with anyone, anywhere with Confera</p>
+          <div role='button'>
+            {user ? (
+              <Link to={"/home"}>Go to Dashboard</Link>
+            ) : (
+              <Link to={"/auth?mode=register"}>Get Started</Link>
+            )}
+          </div>
+        </div>
+        <div>
+          <img src="/mobile.png" alt="Confera mobile preview" />
+        </div>
+      </div>
+      <div>
+        <div className='whyConferaHeading'>
+          <p>Why Confera?</p>
+          <h3>Everything you need, nothing you don't</h3>
+        </div>
+        <div className='whyConferaCards'>
+          <div className="card">
+            <div>
+              <i className="fa-solid fa-link">link</i>
+            </div>
+            <div>
+              <h4>Instant shareable links</h4>
+              <p>Create a room and share the link — your participants join in one click, no account needed.</p>
             </div>
           </div>
-          <div>
-            <img src="/mobile.png" alt="Confera mobile preview" />
-          </div>
+          <div className="card"></div>
+          <div className="card"></div>
+        </div>
       </div>
-    </div>
+    </div> 
   )
 }
 
