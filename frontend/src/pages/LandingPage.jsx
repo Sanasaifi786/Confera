@@ -104,7 +104,7 @@ function LandingPage() {
             <button className="primaryHeroBtn" onClick={() => setShowGuestModal(true)}>Start a meeting</button>
             <button className="secondaryHeroBtn" onClick={() => setShowGuestModal(true)}>Join with a code</button>
           </div>
-          <div className="heroStats">
+          {/* <div className="heroStats">
             <div className="statItem">
               <h3>10k+</h3>
               <p>Active users</p>
@@ -119,7 +119,7 @@ function LandingPage() {
               <h3>&lt;120ms</h3>
               <p>Avg latency</p>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="heroRight">
           <div className="mockMeetingApp">
@@ -204,9 +204,8 @@ function LandingPage() {
         <div className="ctaBanner">
           <div className="ctaText">
             <h3>Ready to connect?</h3>
-            <p>Free forever. No credit card required.</p>
           </div>
-          <button className="ctaButton" onClick={() => navigate('/auth?mode=register')}>Get started free</button>
+          <button className="ctaButton" onClick={() => navigate('/auth?mode=register')}>Get started</button>
         </div>
       </div>
     </div>
