@@ -283,7 +283,7 @@
 /* Submit Button */
 .submitBtn {
   margin-top: 1rem;
-  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  background: var(--gradient-brand);
   color: white;
   border: none;
   border-radius: 10px;
