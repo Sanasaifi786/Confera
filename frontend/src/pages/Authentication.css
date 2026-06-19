@@ -113,10 +113,10 @@
 
 /* Google Button */
 .googleBtn {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   gap: 0.8rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -126,7 +126,7 @@
   font-weight: 500;
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease-in-out;
 }
 
 .googleBtn:hover {
@@ -188,7 +188,7 @@
   font-size: 0.95rem;
   color: #ffffff;
   outline: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease-in-out;
 }
 
 .inputGroup input::placeholder {
@@ -238,7 +238,7 @@
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease-in-out;
 }
 
 .checkboxContainer:hover input ~ .checkmark {
@@ -273,17 +273,16 @@
 .forgotLink {
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.15s ease-in-out;
 }
 
 .forgotLink:hover {
   color: #a78bfa;
 }
 
-/* Submit Button */
 .submitBtn {
   margin-top: 1rem;
-  background: var(--gradient-brand);
+  background: linear-gradient(135deg, #4f5ec7 0%, #7d8ce6 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -291,18 +290,13 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 28px rgba(124, 58, 237, 0.35);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  transition: all 0.15s ease-in-out;
 }
 
 .submitBtn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-  box-shadow: 0 12px 36px rgba(124, 58, 237, 0.5);
-}
-
-.submitBtn:active {
-  transform: translateY(0);
+  background: linear-gradient(135deg, #4451b0 0%, #6f7ecc 100%);
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
 }
 
 .submitBtn:disabled {
@@ -345,7 +339,6 @@
   color: #a78bfa;
   font-weight: 600;
   cursor: pointer;
-  transition: color 0.3s ease;
 }
 
 .authFooter span:hover {
