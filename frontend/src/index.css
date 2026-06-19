@@ -5,30 +5,30 @@
    Rich Theme: Deep Navy + Electric Violet
    ============================================ */
 :root {
-  /* Core Background Layers */
-  --bg-base:      #07080f;   /* Deepest background */
-  --bg-surface:   #0d0e1a;   /* Cards, panels */
-  --bg-elevated:  #12142a;   /* Modals, dropdowns */
-  --bg-hover:     #181a30;   /* Hover states */
+/* Core Background Layers (Slate) */
+  --bg-base:      #0f172a;   /* Slate 900 */
+  --bg-surface:   #1e293b;   /* Slate 800 */
+  --bg-elevated:  #334155;   /* Slate 700 */
+  --bg-hover:     #475569;   /* Slate 600 */
 
-  /* Brand Colors */
-  --brand-primary:   #7c3aed;  /* Violet 600 */
+  /* Brand Colors (Indigo) */
+  --brand-primary:   #6366f1;  /* Indigo 500 */
   --brand-secondary: #4f46e5;  /* Indigo 600 */
-  --brand-glow:      rgba(124, 58, 237, 0.35);
+  --brand-glow:      rgba(99, 102, 241, 0.35);
 
   /* Gradient */
-  --gradient-brand: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-  --gradient-subtle: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(79,70,229,0.1) 100%);
+  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(79, 70, 229, 0.1) 100%);
 
-  /* Text */
-  --text-primary:   #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted:     #475569;
+  /* Text (Slate) */
+  --text-primary:   #f8fafc;   /* Slate 50 */
+  --text-secondary: #cbd5e1;   /* Slate 300 */
+  --text-muted:     #64748b;   /* Slate 500 */
 
   /* Borders */
-  --border-subtle:  rgba(255, 255, 255, 0.07);
-  --border-light:   rgba(255, 255, 255, 0.12);
-  --border-brand:   rgba(124, 58, 237, 0.4);
+  --border-subtle:  rgba(255, 255, 255, 0.05);
+  --border-light:   rgba(255, 255, 255, 0.1);
+  --border-brand:   rgba(99, 102, 241, 0.4);
 
   /* Status */
   --danger:  #ef4444;
@@ -38,10 +38,10 @@
   --font: 'Inter', system-ui, sans-serif;
 
   /* Shadows */
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
-  --shadow-brand: 0 8px 28px rgba(124, 58, 237, 0.4);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
+  --shadow-brand: 0 8px 28px rgba(99, 102, 241, 0.3);
 }
 
 /* Global Reset */
