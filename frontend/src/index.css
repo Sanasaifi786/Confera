@@ -5,43 +5,45 @@
    Rich Theme: Deep Navy + Electric Violet
    ============================================ */
 :root {
-/* Core Background Layers (Slate) */
-  --bg-base:      #0f172a;   /* Slate 900 */
-  --bg-surface:   #1e293b;   /* Slate 800 */
-  --bg-elevated:  #334155;   /* Slate 700 */
-  --bg-hover:     #475569;   /* Slate 600 */
+  /* Core Background Layers */
+  --bg-base:      #0f1115;   /* Page bg */
+  --bg-surface:   #14161c;   /* Sidebar bg */
+  --bg-elevated:  #181a21;   /* Card bg */
+  --bg-hover:     #1e212b;   /* Hover bg */
 
-  /* Brand Colors (Indigo) */
-  --brand-primary:   #6366f1;  /* Indigo 500 */
-  --brand-secondary: #4f46e5;  /* Indigo 600 */
-  --brand-glow:      rgba(99, 102, 241, 0.35);
+  /* Brand Colors */
+  --brand-primary:   #5b6ad8;  /* Accent purple */
+  --brand-secondary: #a3aef0;  /* Accent text (light purple) */
+  --brand-glow:      rgba(91, 106, 216, 0.15);
 
-  /* Gradient */
-  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(79, 70, 229, 0.1) 100%);
+  /* Gradients */
+  --gradient-brand: linear-gradient(135deg, #5b6ad8 0%, #a3aef0 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(91, 106, 216, 0.1) 0%, rgba(163, 174, 240, 0.05) 100%);
 
-  /* Text (Slate) */
-  --text-primary:   #f8fafc;   /* Slate 50 */
-  --text-secondary: #cbd5e1;   /* Slate 300 */
-  --text-muted:     #64748b;   /* Slate 500 */
+  /* Text Colors */
+  --text-primary:   #f0f0f2;   /* Heading text */
+  --text-secondary: #7a7d87;   /* Muted text */
+  --text-muted:     #565963;   /* Faint text */
+  --text-accent:    #a3aef0;   /* Accent text (light purple) */
 
   /* Borders */
-  --border-subtle:  rgba(255, 255, 255, 0.05);
-  --border-light:   rgba(255, 255, 255, 0.1);
-  --border-brand:   rgba(99, 102, 241, 0.4);
+  --border-subtle:  rgba(255, 255, 255, 0.08);
+  --border-light:   rgba(255, 255, 255, 0.15); /* Border */
+  --border-brand:   rgba(91, 106, 216, 0.4);
 
-  /* Status */
+  /* Status Colors */
   --danger:  #ef4444;
-  --success: #10b981;
+  --warning: #ef9f27;          /* Warning amber */
+  --success: #6fcf97;          /* Success green */
 
   /* Typography */
   --font: 'Inter', system-ui, sans-serif;
 
   /* Shadows */
-  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
-  --shadow-brand: 0 8px 28px rgba(99, 102, 241, 0.3);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --shadow-brand: 0 8px 24px rgba(91, 106, 216, 0.2);
 }
 
 /* Global Reset */
