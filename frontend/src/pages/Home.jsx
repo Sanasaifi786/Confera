@@ -68,7 +68,7 @@ function Home() {
         <div className="sidebar-logo">
           <div className="sidebar-logo-mark">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
             </svg>
           </div>
           <span className="sidebar-logo-text">Confera</span>
@@ -80,7 +80,7 @@ function Home() {
             onClick={() => setActiveTab('meetings')}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
             </svg>
             Meetings
           </button>
@@ -89,7 +89,7 @@ function Home() {
             onClick={() => setActiveTab('history')}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+              <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
             </svg>
             History
           </button>
@@ -107,7 +107,7 @@ function Home() {
           </div>
           <button className="sidebar-logout" onClick={logout} title="Logout">
             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+              <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
             </svg>
           </button>
         </div>
@@ -129,7 +129,7 @@ function Home() {
               <div className="action-card action-card-primary">
                 <div className="action-card-icon-wrap">
                   <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
-                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
                   </svg>
                 </div>
                 <div className="action-card-body">
@@ -145,7 +145,7 @@ function Home() {
               <div className="action-card action-card-secondary">
                 <div className="action-card-icon-wrap secondary">
                   <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
-                    <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/>
+                    <path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z" />
                   </svg>
                 </div>
                 <div className="action-card-body">
@@ -224,7 +224,7 @@ function Home() {
                     <div className="history-row-left">
                       <div className="history-row-icon">
                         <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-                          <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                          <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
                         </svg>
                       </div>
                       <code className="history-meeting-id">{m.meeting_id}</code>

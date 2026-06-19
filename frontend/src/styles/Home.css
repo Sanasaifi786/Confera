@@ -124,6 +124,7 @@
 
 .sidebar-user-info {
   flex: 1;
+  padding-top: 10px;
   min-width: 0;
 }
 
@@ -433,9 +434,20 @@
   text-align: center;
 }
 
-.history-empty-icon { font-size: 2.5rem; }
-.history-empty p { font-size: 1rem; font-weight: 600; color: var(--text-secondary); }
-.history-empty span { font-size: 0.85rem; color: var(--text-muted); }
+.history-empty-icon {
+  font-size: 2.5rem;
+}
+
+.history-empty p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.history-empty span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
 
 .history-list {
   background: var(--bg-surface);
@@ -465,8 +477,13 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.history-row:last-child { border-bottom: none; }
-.history-row:hover { background: var(--bg-hover); }
+.history-row:last-child {
+  border-bottom: none;
+}
+
+.history-row:hover {
+  background: var(--bg-hover);
+}
 
 .history-row-left {
   display: flex;
