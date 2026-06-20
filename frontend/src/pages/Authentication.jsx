@@ -41,13 +41,13 @@ function Authentication() {
         setMessage('Registration successful! Logging you in...');
         await login(username, password);
         setTimeout(() => {
-          navigate('/landingPage');
+          navigate('/');
         }, 1500);
       } else {
         await login(username, password);
         setMessage('Login successful! Redirecting...');
         setTimeout(() => {
-          navigate('/landingPage' );
+          navigate('/');
         }, 1500);
       }
     } catch (err) {
