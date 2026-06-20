@@ -22,8 +22,8 @@ function App() {
       <Router>
           <Routes>
             <Route path="/" element={<LandingPage/>}/>
-            {/* Redirect logged-in users away from /auth to /home */}
-            <Route path="/auth" element={user ? <Navigate to="/home" replace /> : <Authentication/>}/>
+            {/* Redirect logged-in users away from /auth to / */}
+            <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Authentication/>}/>
             {/* Protected Home Dashboard */}
             <Route path="/home" element={user ? <Home/> : <Navigate to="/auth?mode=login" replace />}/>
             <Route path='/:url' element={<VideoMeetComponent/>}/>
