@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
+import { API_BASE_URL } from '../config.js';
 import '../styles/Home.css';
 
-const API = 'http://localhost:8000/api/v1/user';
+const API = API_BASE_URL;
 
 function Home() {
   const navigate = useNavigate();
