@@ -38,15 +38,16 @@ function Authentication() {
     try {
       if (mode === 'register') {
         await register(name, username, password);
-        setMessage('Registration successful! Redirecting to login...');
+        setMessage('Registration successful! Logging you in...');
+        await login(username, password);
         setTimeout(() => {
-          setSearchParams({ mode: 'login' });
+          navigate('/landingPage');
         }, 1500);
       } else {
         await login(username, password);
         setMessage('Login successful! Redirecting...');
         setTimeout(() => {
-          navigate('/home');
+          navigate('/landingPage' );
         }, 1500);
       }
     } catch (err) {
