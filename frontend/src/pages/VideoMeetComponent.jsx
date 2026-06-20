@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { TextField, Button } from '@mui/material';
 import { io } from 'socket.io-client';
+import { BACKEND_URL } from '../config.js';
 import '../styles/videoComponent.css';
 
-const server_url = "http://localhost:8000";
+const server_url = BACKEND_URL;
 
 var connections = {};
 
