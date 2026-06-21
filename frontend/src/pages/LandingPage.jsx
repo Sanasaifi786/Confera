@@ -90,10 +90,10 @@ function LandingPage() {
 
       <div className="landingMainContainer">
         <div className="heroLeft">
-          <div className="heroBadge">
+          {/* <div className="heroBadge">
             <span className="badgeDot"></span>
             Now with instant rooms — no signup needed
-          </div>
+          </div> */}
           <h1>
             Video calls that feel <span className="highlight-text">effortless</span>
           </h1>
