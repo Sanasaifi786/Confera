@@ -205,7 +205,9 @@ function LandingPage() {
           <div className="ctaText">
             <h3>Ready to connect?</h3>
           </div>
-          <button className="ctaButton" onClick={() => navigate('/auth?mode=register')}>Get started</button>
+          <button className="ctaButton" onClick={() => user ? navigate('/home') : navigate('/auth?mode=register')}>
+            {user ? 'Go to Home' : 'Get started'}
+          </button>
         </div>
       </div>
     </div>
