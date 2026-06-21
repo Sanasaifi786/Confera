@@ -59,7 +59,19 @@
 .authLogoIcon {
   width: 42px;
   height: 42px;
+  background: var(--gradient-brand);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #ffffff;
+  box-shadow: var(--shadow-brand);
+  flex-shrink: 0;
+}
+
+.authLogoIcon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .authBrandContainer h2 {
