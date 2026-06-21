@@ -174,10 +174,11 @@ function VideoMeetComponent() {
         }
     }
 
-    let addMessage = (data, sender, socketIdSender) => {
+    let addMessage = (data, sender, socketIdSender, timestamp) => {
+        const time = timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         setMessages((prevMessages) => [
             ...prevMessages,
-            { sender: sender, data: data }
+            { sender: sender, data: data, timestamp: time }
         ]);
         if (socketIdSender !== socketIdRef.current) {
             setNewMessage((prev) => prev + 1);
@@ -402,7 +403,8 @@ function VideoMeetComponent() {
 
     let sendMessage = () => {
         if (message.trim() === "") return;
-        socketRef.current.emit("chat-message", message, username);
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        socketRef.current.emit("chat-message", message, username, timestamp);
         setMessage("");
     }
 
@@ -705,9 +707,10 @@ function VideoMeetComponent() {
                                                 msg.sender === username ? 'chat-bubble-self' : 'chat-bubble-other'
                                             }`}
                                         >
-                                            {msg.sender !== username && (
-                                                <span className="chat-sender">{msg.sender}</span>
-                                            )}
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                                <span className="chat-sender">{msg.sender === username ? 'You' : msg.sender}</span>
+                                                <span style={{ fontSize: '0.75rem', color: msg.sender === username ? '#e0e7ff' : '#8f9bb3' }}>{msg.timestamp}</span>
+                                            </div>
                                             <p className="chat-text">{msg.data}</p>
                                         </div>
                                     ))
