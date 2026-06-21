@@ -42,7 +42,7 @@ export const connectToSocket = (server)=>{
 
                 if (messages[path]) {
                     for (let a = 0; a < messages[path].length; a++) {
-                        io.to(socket.id).emit("receive-message", messages[path][a]['data'], messages[path][a]['sender'], messages[path][a]['socket-id-sender']);
+                        io.to(socket.id).emit("receive-message", messages[path][a]['data'], messages[path][a]['sender'], messages[path][a]['socket-id-sender'], messages[path][a]['timestamp']);
                     }
                 }
             } else {
@@ -80,7 +80,7 @@ export const connectToSocket = (server)=>{
             // Send past messages to the admitted user
             if (messages[path]) {
                 for (let a = 0; a < messages[path].length; a++) {
-                    io.to(waitingSocketId).emit("receive-message", messages[path][a]['data'], messages[path][a]['sender'], messages[path][a]['socket-id-sender']);
+                    io.to(waitingSocketId).emit("receive-message", messages[path][a]['data'], messages[path][a]['sender'], messages[path][a]['socket-id-sender'], messages[path][a]['timestamp']);
                 }
             }
         });
@@ -96,7 +96,7 @@ export const connectToSocket = (server)=>{
             io.to(toId).emit("signal",socket.id,message);
         })
 
-        socket.on("chat-message", (data,sender)=>{
+        socket.on("chat-message", (data, sender, timestamp)=>{
             const [matchingRoom,found] = Object.entries(connections)
             .reduce(([room,isFound],[roomKey,roomValue])=>{
                 if(!isFound && roomValue.includes(socket.id)){
@@ -109,9 +109,9 @@ export const connectToSocket = (server)=>{
                 if(messages[matchingRoom]==undefined){
                     messages[matchingRoom] = [];
                 }
-                messages[matchingRoom].push({'sender':sender, "data":data,"socket-id-sender":socket.id});
+                messages[matchingRoom].push({'sender':sender, "data":data,"socket-id-sender":socket.id, "timestamp": timestamp});
                 connections[matchingRoom].forEach(elem=>{
-                    io.to(elem).emit("receive-message",data,sender,socket.id);
+                    io.to(elem).emit("receive-message", data, sender, socket.id, timestamp);
                 })
             }
         })
